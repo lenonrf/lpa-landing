@@ -1,0 +1,81 @@
+
+
+    var flowController = {
+
+
+        applyFlowItem : function(isNextItem) {
+
+            if(!flowDataRaw.questionHall[flowDataItem.index+1]){
+                window.location.replace('https://loucosporamostras.com/?tag=bakery');
+                return null;
+            }
+
+            if(isNextItem){
+                setFlowDataItem(flowDataItem.index + 1);
+            }
+
+            $('#flowDataTitle').html(flowDataItem.title);
+            $('#flowDataDescription').html(flowDataItem.description);
+            $("#flowImage").attr("src",flowDataItem.image);
+            $('#flowDataAnswerList').html('');
+
+            var colorBackground = '';
+            var colorText = '';
+            var targetBlank = '';
+
+            $.each( flowDataItem.answerList, function( index, item ){
+                    
+                colorBackground = (item.action.type == 'delivery') ? '#87ad1a' : '#d0d5db';
+                colorText = (item.action.type == 'delivery') ? '#FFF' : '';
+
+                $('#flowDataAnswerList').append('<div><label style="display:block; cursor: pointer; background: '+colorBackground+'; color: '+colorText+'; padding: 10px; margin-bottom: 20px;"><input type="radio" name="answerRadio" id="answerRadio_'+index+'" value="'+index+'">&nbsp;&nbsp;<b>'+item.answer+'</b></label></div>');
+            });
+
+        },
+
+
+
+        setFlowDataItem: function (index){
+
+            if(!flowDataRaw){
+                return null;
+            }
+
+            flowDataItem = {
+
+                index: index,
+
+                title: flowDataRaw.questionHall[index].mainQuestion.title,
+                description: flowDataRaw.questionHall[index].mainQuestion.description,
+                answerList: flowDataRaw.questionHall[index].mainQuestion.answerList,
+                image: flowDataRaw.questionHall[index].delivery.questionHall.largeImage,
+                targetBlankUrl: flowDataRaw.questionHall[index].delivery.questionHall.targetBlankUrl
+            };
+        },
+
+
+
+        setPercentageBar: function (percetage){
+
+            $('#barFlow').html('<div class="tipWrap"><span class="tip"></span></div><span class="fill" data-percentage="'+percetage+'"></span>');
+        },
+
+
+
+        loadBar: function (percetage){
+
+            flow_setPercentageBar(percetage);
+
+            $('#barFlow').barfiller({
+
+                barColor: '#58a4b0',
+                tooltip: true,
+                duration: 1000,
+                animateOnResize: false,
+                symbol: " %"
+
+            });        
+        }
+
+    };
+
