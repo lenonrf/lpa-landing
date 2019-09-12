@@ -26,33 +26,31 @@
 			$('#form-button').attr("disabled", true);
 
 			$.post('http://loucosporamostras.com/api/user', cad_getDataForm())
-				.done(function( data ) {
-					
-					var url = 'http://loucosporamostras.com/flow-init-page?user='+data.email;
-					//ga('send', 'pageview', url);
-				
-					window.location.href = url;
-				})
+				.done(function( data ) {})
 				.always(function() {
 
 					var url = 'flow.html?user='+data.email;
-					//ga('send', 'pageview', url);
-				
 					window.location.href = url;
 
 					$('#form-button').attr("disabled", false);
 				 });
+
+				ga('send', 'event', 'cadastro', 'sucesso');
+								
 		};
 
 
 		var cad_getDataForm = function() {
+
+			//var birthDate = $('#form-birthdate').val().trim();
+			//console.log(new Date(birthDate));
 			
 			var data = {
 
 				name: $('#form-name').val().trim(),
 				email: $('#form-email').val().trim(),
 				gender: $("#cad_form input[type='radio']:checked").val(),
-				birthDate: $('#form-birthdate').val().trim(),
+				birthDate: '',//$('#form-birthdate').val().trim(),
 				address :{
 					zipcode: $('#form-cep').val().trim()
 				}
@@ -85,10 +83,10 @@
 				return false;
 			}
 
-			if(!regexBirthdate.test(String(data.birthDate))){
-				alert("Corrija a Data de Nascimento");
-				return false;
-			}
+			//if(!regexBirthdate.test(String(data.birthDate))){
+			//	alert("Corrija a Data de Nascimento");
+			//	return false;
+			//}
 
 			if(!regexCep.test(String(data.address.zipcode))){
 				alert("Corrija o CEP");

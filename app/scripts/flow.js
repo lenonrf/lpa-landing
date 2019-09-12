@@ -6,7 +6,7 @@ var flowDataItem = {
 
 $(document).ready(function() {
 
-    $.get('http://loucosporamostras.com/api/user/email/' + getUrlParameter('user'), function(data) {
+    /*$.get('http://loucosporamostras.com/api/user/email/' + getUrlParameter('user'), function(data) {
         $('#flowTitle').html('Olá <span style="color: #58a4b0">' + data.name.split(' ').slice(0, 1) + '</span>, obrigado pelo seu cadastro, estamos quase lá !!! Para finalizar queremos mostrar algumas oportunidade que acreditamos que você vai gostar.');
     });
 
@@ -14,7 +14,7 @@ $(document).ready(function() {
 
     $('#okButton').click(function() {
 
-        ga('send', 'event', 'flow', 'init', getUrlParameter('user'));
+        ga('send', 'event', 'flow', 'start', getUrlParameter('user'));
 
         $.get('http://loucosporamostras.com/api/myhall?affcode=lpa&user=' + getUrlParameter('user'), function(data) {
 
@@ -32,6 +32,27 @@ $(document).ready(function() {
             flow_loadBar(getFlowPercentage());
 
         });
+    });*/
+
+
+
+    ga('send', 'event', 'flow', 'start', getUrlParameter('user'));
+
+    $.get('http://loucosporamostras.com/api/myhall?affcode=lpa&user=' + getUrlParameter('user'), function(data) {
+
+        flowDataRaw = data.questionHall;
+        console.log('data', data);
+        console.log('flowDataRaw', flowDataRaw);
+        setFlowDataItem(0);
+
+        $('#amostrasPic').hide();
+        $('#amostrasContent').show();
+        $('#barFlow').show();
+        $('body').css('background-color', '#e2e5e9');
+        $('#header-logo').css('background-color', '#FFF');
+
+        flow_loadBar(getFlowPercentage());
+
     });
 
 
@@ -56,7 +77,7 @@ $(document).ready(function() {
                 		opacity: '1'
 		            }, 0).animate({
 		                opacity: '0.01'
-		            }, 1500, function() {
+		            }, 500, function() {
 
 		                console.log(flowDataItem);
 		                window.open(flowDataItem.targetBlankUrl, '_blank');
@@ -89,9 +110,15 @@ $(document).ready(function() {
 	            opacity: '1'
 	        }, 0).animate({
 	            opacity: '0.01'
-	        }, 2500, function() {
+	        }, 500, function() {
 
+                $("#flowImage").hide();
 	            setFlowDataItem(flowDataItem.index+1);
+                
+                $("#flowImage").load(function(){
+                    $("#flowImage").show();
+                });
+                
 	            $('#botaoContinuar').attr("disabled", true);
 	            $("#botaoContinuar").attr('class', 'btn');
 
