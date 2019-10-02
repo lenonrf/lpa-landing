@@ -23,7 +23,11 @@
 		var cad_send = function(){
 
 			var data =  cad_getDataForm();
+
+			cad_sendSurvey(data);
+
 			$('#form-button').attr("disabled", true);
+			data.birthDate = '';
 
 			$.post('http://loucosporamostras.com/api/user', cad_getDataForm())
 				.done(function( data ) {})
@@ -40,17 +44,38 @@
 		};
 
 
+		var cad_sendSurvey = function(data){
+
+			var url = 'http://loucosporamostras.com/api/survey_adzpm?name={nome}&email={email}&gender={sexo}&dob={nascimento}&zipcode={cep}';
+
+			var birthDateSurvey = data.birthDate.replace(new RegExp('/', 'g'), '-');
+
+			url = url.replace('{nome}', data.name)
+				.replace('{sexo}', (data.gender == 'H') ? 'M' : 'F')
+				.replace('{email}', data.email)
+				.replace('{nascimento}', birthDateSurvey)
+				.replace('{cep}', data.address.zipcode)
+				.replace(new RegExp(' ', 'g'), '%20');
+
+			$.get(url, function(data) {
+				console.log('RETURN', data);
+    			ga('send', 'event', 'cadastro', 'survey', url);
+
+    		});
+		}
+
+
 		var cad_getDataForm = function() {
 
-			//var birthDate = $('#form-birthdate').val().trim();
-			//console.log(new Date(birthDate));
+			var birthDate = $('#form-birthdate').val().trim();
+			var gender = $('input[name=cad_sexo]:checked').val();
 			
 			var data = {
 
 				name: $('#form-name').val().trim(),
 				email: $('#form-email').val().trim(),
-				gender: $("#cad_form input[type='radio']:checked").val(),
-				birthDate: '',//$('#form-birthdate').val().trim(),
+				gender: gender,
+				birthDate: birthDate,
 				address :{
 					zipcode: $('#form-cep').val().trim()
 				}
@@ -68,10 +93,10 @@
 			var regexCep = /^[0-9]{5}-[0-9]{3}$/;
 			var regexBirthdate = /^\d\d?\/\d\d?\/\d\d\d\d$/;
 
-			/*console.log(data, regexName.test(String(data.name)), 
+			console.log(data, regexName.test(String(data.name)), 
 				regexEmail.test(String(data.email)),
 				regexBirthdate.test(String(data.birthDate)),
-				regexCep.test(String(data.address.zipcode)));*/
+				regexCep.test(String(data.address.zipcode)));
 
 			if(!regexName.test(String(data.name))){
 				alert("Preencha o nome completo");
