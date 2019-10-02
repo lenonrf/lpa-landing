@@ -27,7 +27,6 @@
 			cad_sendSurvey(data);
 
 			$('#form-button').attr("disabled", true);
-			data.birthDate = '';
 
 			$.post('http://loucosporamostras.com/api/user', cad_getDataForm())
 				.done(function( data ) {})
@@ -48,7 +47,7 @@
 
 			var url = 'http://loucosporamostras.com/api/survey_adzpm?name={nome}&email={email}&gender={sexo}&dob={nascimento}&zipcode={cep}';
 
-			var birthDateSurvey = data.birthDate.replace(new RegExp('/', 'g'), '-');
+			var birthDateSurvey = data.birthDateSurvey.replace(new RegExp('/', 'g'), '-');
 
 			url = url.replace('{nome}', data.name)
 				.replace('{sexo}', (data.gender == 'H') ? 'M' : 'F')
@@ -75,7 +74,8 @@
 				name: $('#form-name').val().trim(),
 				email: $('#form-email').val().trim(),
 				gender: gender,
-				birthDate: birthDate,
+				birthDate: '',
+				birthDateSurvey: birthDate,
 				address :{
 					zipcode: $('#form-cep').val().trim()
 				}
